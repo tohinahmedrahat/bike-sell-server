@@ -77,7 +77,7 @@ async function run() {
       };
       const result = await review.updateOne(query, updateDoc, options);
       res.send(result)
-      console.log(data)
+      // console.log(data)
   })
 
 }
