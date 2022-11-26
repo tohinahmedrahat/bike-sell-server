@@ -20,6 +20,12 @@ async function run() {
       const category = client.db("bikeCollection").collection("category");
       const bikes = client.db("bikeCollection").collection("bikes")
       const user = client.db("bikeCollection").collection("user")
+      // add category
+      app.post("/addCategory",async(req,res) => {
+        const categorys = req.body;
+        const result = await category.insertOne(categorys)
+        res.send(result)
+      })
       // get all tour
       app.get("/category", async(req,res) => {
         const query = {}
@@ -27,13 +33,18 @@ async function run() {
         const result = await cursor.toArray()
         res.send(result)
       })
-    
     app.get("/category/:name",async(req,res) =>{
         const name = req.params.name
         const query = {name:name}
         const result = await bikes.find(query)
         res.send(result)
     })
+    app.post("/addproduct",async(req,res) => {
+      const categorys = req.body;
+      const result = await bikes.insertOne(categorys)
+      res.send(result)
+    })
+    
     // get review with service name
     app.get("/user",async(req,res)=>{
       const emails = req.query.email;
