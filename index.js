@@ -33,10 +33,18 @@ async function run() {
         const result = await cursor.toArray()
         res.send(result)
       })
-    app.get("/category/:name",async(req,res) =>{
-        const name = req.params.name
-        const query = {name:name}
-        const result = await bikes.find(query)
+    app.get("/product",async(req,res) =>{
+        const name = req.query.category
+        const query = {category:name}
+        const data = bikes.find(query)
+        const result = await data.toArray()
+        res.send(result)
+    })
+    app.get("/products",async(req,res) =>{
+        const emails = req.query.email
+        const query = {userEmail:emails}
+        const data = bikes.find(query)
+        const result = await data.toArray()
         res.send(result)
     })
     app.post("/addproduct",async(req,res) => {
@@ -78,12 +86,11 @@ async function run() {
     // update review 
     app.put('/user/:id', async (req, res) => {
       const _id = req.params.id;
-      const data = req.body;
       const query = { _id: ObjectId(_id) };
       const options = { upsert: true };
       const updateDoc = {
           $set: {
-            role:data
+            verfiyed:true
           }
       };
       const result = await review.updateOne(query, updateDoc, options);
