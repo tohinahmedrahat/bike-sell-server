@@ -20,13 +20,15 @@ async function run() {
       const category = client.db("bikeCollection").collection("category");
       const bikes = client.db("bikeCollection").collection("bikes")
       const user = client.db("bikeCollection").collection("user")
+      const order = client.db("bikeCollection").collection("order")
+      const advertisement = client.db("bikeCollection").collection("advertisement")
       // add category
       app.post("/addCategory",async(req,res) => {
         const categorys = req.body;
         const result = await category.insertOne(categorys)
         res.send(result)
       })
-      // get all tour
+      // get all category
       app.get("/category", async(req,res) => {
         const query = {}
         const cursor = category.find(query)
@@ -40,6 +42,7 @@ async function run() {
         const result = await data.toArray()
         res.send(result)
     })
+    // get only sing in byer product
     app.get("/products",async(req,res) =>{
         const emails = req.query.email
         const query = {userEmail:emails}
@@ -53,7 +56,7 @@ async function run() {
       res.send(result)
     })
     
-    // get review with service name
+    // get user
     app.get("/user",async(req,res)=>{
       const emails = req.query.email;
       const query = {emali:emails}
@@ -65,24 +68,46 @@ async function run() {
           const result = await user.insertOne(users)
           res.send(result)
       })
-      
-      // get review with email 
-      app.get("/",async(req,res)=>{
-        const email = req.query.email;
-        const query = {userEmail:email}
-        const cursor = review.find(query)
-        const result = await cursor.toArray()
-        res.send(result)
+      app.post("/order", async(req,res) => {
+        const users = req.body
+          const result = await order.insertOne(users)
+          res.send(result)
       })
-      // delete review from user 
-      app.delete("/user/:id",async(req,res)=>{
+      app.get("/order",async(req,res) =>{
+        const emails = req.query.email
+        const query = {email:emails}
+        const data = order.find(query)
+        const result = await data.toArray()
+        res.send(result)
+    })
+    app.get("/alluser", async (req,res) => {
+      const query= {}
+      const cursor = user.find(query)
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+      // // get review with email 
+      // app.get("/",async(req,res)=>{
+      //   const email = req.query.email;
+      //   const query = {userEmail:email}
+      //   const cursor = review.find(query)
+      //   const result = await cursor.toArray()
+      //   res.send(result)
+      // })
+      // delete product from seller 
+      app.delete("/product/:id",async(req,res)=>{
         const id = req.params.id;
         console.log(id)
         const query = {_id:ObjectId(id)}
-        const result = await review.deleteOne(query)
+        const result = await bikes.deleteOne(query)
         res.send(result)
       })
-      
+      //  add advertisement
+      app.post("/advertisement", async(req,res) => {
+        const product = req.body
+          const result = await advertisement.insertOne(product)
+          res.send(result)
+      })
     // update review 
     app.put('/user/:id', async (req, res) => {
       const _id = req.params.id;
