@@ -56,18 +56,34 @@ async function run() {
       res.send(result)
     })
     
-    // get user
-    app.get("/user",async(req,res)=>{
-      const emails = req.query.email;
-      const query = {emali:emails}
-      const result =await user.findOne(query)
+    
+    app.put('/user', async (req, res) => {
+      const email = req.body.emali;
+      const data = req.body;
+      console.log(data)
+      const query = {emali : email };
+      const options = { upsert: true };
+      const updateDoc = {
+          $set: {
+              img: data.img,
+              role: data.role,
+              name: data.name,
+              emali: data.emali,
+              verify: data.verify
+          }
+      };
+
+      const result = await user.updateOne(query, updateDoc, options);
+      
       res.send(result)
-    })
-      app.post("/user", async(req,res) => {
-        const users = req.body
-          const result = await user.insertOne(users)
-          res.send(result)
-      })
+  })
+  // get user
+  app.get("/user",async(req,res)=>{
+    const emails = req.query.email;
+    const query = {emali:emails}
+    const result =await user.findOne(query)
+    res.send(result)
+  })
       app.post("/order", async(req,res) => {
         const users = req.body
           const result = await order.insertOne(users)
@@ -86,20 +102,19 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
-      // // get review with email 
-      // app.get("/",async(req,res)=>{
-      //   const email = req.query.email;
-      //   const query = {userEmail:email}
-      //   const cursor = review.find(query)
-      //   const result = await cursor.toArray()
-      //   res.send(result)
-      // })
+  
       // delete product from seller 
       app.delete("/product/:id",async(req,res)=>{
         const id = req.params.id;
-        console.log(id)
         const query = {_id:ObjectId(id)}
         const result = await bikes.deleteOne(query)
+        res.send(result)
+      })
+      app.delete("/user/:id",async(req,res)=>{
+        const id = req.params.id;
+        console.log(id)
+        const query = {_id:ObjectId(id)}
+        const result = await user.deleteOne(query)
         res.send(result)
       })
       //  add advertisement
@@ -107,6 +122,13 @@ async function run() {
         const product = req.body
           const result = await advertisement.insertOne(product)
           res.send(result)
+      })
+      // get advertisement 
+      app.get("/advertisement", async(req,res) => {
+        const query = {}
+        const cursor = advertisement.find(query)
+        const result = await cursor.toArray()
+        res.send(result)
       })
     // update review 
     app.put('/user/:id', async (req, res) => {
@@ -118,7 +140,7 @@ async function run() {
             verfiyed:true
           }
       };
-      const result = await review.updateOne(query, updateDoc, options);
+      const result = await user.updateOne(query, updateDoc, options);
       res.send(result)
       // console.log(data)
   })
