@@ -56,11 +56,10 @@ async function run() {
       res.send(result)
     })
     
-    
+    // put user 
     app.put('/user', async (req, res) => {
       const email = req.body.emali;
       const data = req.body;
-      console.log(data)
       const query = {emali : email };
       const options = { upsert: true };
       const updateDoc = {
